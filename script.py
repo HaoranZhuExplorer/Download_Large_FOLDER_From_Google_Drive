@@ -2,15 +2,18 @@
 # use the 2TB ONCE dataset as an example: https://once-for-auto-driving.github.io/download.html
 
 import requests
+import subprocess
+from typing import Dict
+
 
 # set your google drive access token. example: https://stackoverflow.com/questions/65312867/how-to-download-large-file-from-google-drive-from-terminal-gdown-doesnt-work
-ACCESS_TOKEN = <INSERT_ACCESS_TOKEN>
+
+
+
+ACCESS_TOKEN = <insert_your_access_token>
 
 # set all the folders and their corresponding id in google drive, for example below:
 FOLDERS = {
-    "lidar_p0": "15phWhQy5QvhECHjzdM881RBfRBLYqvNb",
-    "lidar_p1": "1uvBIGFhBgSoQOoVOt_wa2v1R0wSzmJZ0",
-    "lidar_p2": "1JjOggKQO5zrEapBTx13cE79A_PzSeQzN",
     "lidar_p3": "1dEqJ_suuYbB2vbSwO8Kw__rNBBKfJ5qJ",
     "lidar_p4": "1qgiTZwV9XIa_UUodSuL17QWkpFfgn9-l",
     "lidar_p5": "19hCy7N7n2YIM_P-K0e5hKCv9-L0G8BRJ",
@@ -58,8 +61,10 @@ if __name__ == "__main__":
       files = list_files_in_folder(ACCESS_TOKEN, FOLDER_ID)
       for name, fid in files.items():
         print(f"{name}: {fid}")
-      
+        if name == "raw_lidar_p3.tar.partaf" or name=="raw_lidar_p3.tar.partae":
+            continue
+        
         download_command = "curl -H \"Authorization: Bearer {}\" https://www.googleapis.com/drive/v3/files/{}?alt=media -o {}".format(ACCESS_TOKEN, fid, name)
         print(download_command)
         # execute it in linux
-        !{download_command}
+        result = subprocess.run(download_command, shell=True, check=True, text=True, stdout=subprocess.PIPE)
